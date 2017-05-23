@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "h5file.hpp"
+
 namespace alab{
 // A container of references, just in case one wants
 // to use operator [] on index.
@@ -52,6 +54,8 @@ public:
     // update num_chrom and the chrom_* vectors. Call if the data
     // vectors have been directly modified. 
     void rebuild_internal_index();
+    
+    void save(H5::H5File &loc, unsigned int compression = 6, unsigned int chunksize = 100000);
 
 }; // class Index
 
@@ -73,6 +77,8 @@ public:
     std::string get_chrom(unsigned int c);
     int get_chromnum(const std::string & chrom);
     Index BinInfo(unsigned int resolution);
+    
+    void save(H5::H5File &loc, unsigned int compression = 6, unsigned int chunksize = 10000);
 private:
     std::map<std::string, int> chromMap;
     

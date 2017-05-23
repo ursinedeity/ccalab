@@ -192,4 +192,35 @@ void Matrix::SortIndices(){
     }    
 }
 
+
+
+
+/**
+ * Save matrix information into h5 file
+ * 
+ * Input Arguments:
+ *   H5::H5File                                - output h5 group
+ *   unsigned int compression                  - compression level, default 6
+ *   unsigned int chunksize                    - compression chunk size default 100000
+ * 
+ * Note:
+ *   This function will generate a group "matrix" and save 
+ *      chrom_sizes: int32 []
+ *      chrom: int32 []
+ *      start: int32 []
+ *      end: int32 []
+ *      label: string []
+ *      copy: int32 []
+ * 
+ */
+void Matrix::save(H5::H5File &loc, unsigned int compression, unsigned int chunksize){
+    H5::Group matrix(loc.createGroup("matrix"));
+    
+    add_dataset1D(matrix, "data", data, nnz, compression, chunksize);
+    add_dataset1D(matrix, "indices", indices, nnz, compression, chunksize);
+    add_dataset1D(matrix, "indptr", indptr, size+1, compression, chunksize);
+    add_dataset1D(matrix, "diagonal", diagonal, size, compression, chunksize);
+    
+}
+
 };

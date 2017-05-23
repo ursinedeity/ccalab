@@ -3,7 +3,8 @@
 #include <cmath>
 #include <iostream>
 namespace alab{
-/*
+    
+/**
  * Constructor Genome
  * 
  * Initialize Genome object
@@ -32,7 +33,7 @@ Genome::Genome(const std::string &assembly, const std::vector<std::string> &chro
 
 
 
-/*
+/**
  * Constructor Genome
  * 
  * Initialize Genome object
@@ -55,7 +56,7 @@ Genome::Genome(const std::string &assembly, const std::vector<std::string> &chro
 }
 
 
-/*
+/**
  * Get a chromosome representation by index
  * 
  * Input Arguments:
@@ -74,7 +75,7 @@ std::string Genome::get_chrom(unsigned int c){
 
 
 
-/*
+/**
  * Get a chromosome index by representation
  * 
  * Input Arguments:
@@ -94,7 +95,8 @@ int Genome::get_chromnum(const std::string & chrom){
 
 
 
-/*
+
+/**
  * Build Binned Index by Resolution
  * 
  * Input Arguments:
@@ -129,7 +131,37 @@ Index Genome::BinInfo(unsigned int resolution){
 
 
 
-/*
+/**
+ * Save genome information into h5 file
+ * 
+ * Input Arguments:
+ *   H5::File                                  - output h5 group
+ *   unsigned int compression                  - compression level, default 6
+ *   unsigned int chunksize                    - compression chunk size default 100000
+ * 
+ * Note:
+ *   This function will generate a group "genome" and save 
+ *      assembly: string
+ *      chroms: string []
+ *      origins: int32 []
+ *      lengths: int32 []
+ * 
+ */
+void Genome::save(H5::H5File &loc, unsigned int compression, unsigned int chunksize){
+    H5::Group genome(loc.createGroup("genome"));
+    
+    add_dataset1D(genome, "assembly", &assembly, 1);
+    add_dataset1D(genome, "chroms", chroms.data(), chroms.size(), compression, chunksize);
+    add_dataset1D(genome, "origins", origins.data(), origins.size(), compression, chunksize);
+    add_dataset1D(genome, "lengths", lengths.data(), lengths.size(), compression, chunksize);
+    
+}
+
+//==========================================================
+
+
+
+/**
  * Index instance constructor
  * 
  * Input Arguments:
@@ -146,7 +178,7 @@ Index::Index(const std::vector<unsigned int> &chromList,
     this->chrom = chromList;
     this->start = startList;
     this->end = endList;
-    num_chrom = chromList.size();
+    num_chrom = chrom_sizes.size();
     
     for (unsigned int i = 0; i < chromList.size(); ++i){
         copy.push_back(0);
@@ -167,4 +199,36 @@ Index::Index(const std::vector<unsigned int> &chromList,
 // }
 
 
+
+
+
+/**
+ * Save index information into h5 file
+ * 
+ * Input Arguments:
+ *   H5::H5File                                 - output h5 group
+ *   unsigned int compression                  - compression level, default 6
+ *   unsigned int chunksize                    - compression chunk size default 100000
+ * 
+ * Note:
+ *   This function will generate a group "index" and save 
+ *      chrom_sizes: int32 []
+ *      chrom: int32 []
+ *      start: int32 []
+ *      end: int32 []
+ *      label: string []
+ *      copy: int32 []
+ * 
+ */
+void Index::save(H5::H5File &loc, unsigned int compression, unsigned int chunksize){
+    H5::Group index(loc.createGroup("index"));
+    
+    add_dataset1D(index, "chrom_sizes", chrom_sizes.data(), chrom_sizes.size(), compression, chunksize);
+    add_dataset1D(index, "chrom", chrom.data(), chrom.size(), compression, chunksize);
+    add_dataset1D(index, "start", start.data(), start.size(), compression, chunksize);
+    add_dataset1D(index, "end", end.data(), end.size(), compression, chunksize);
+    add_dataset1D(index, "label", label.data(), label.size(), compression, chunksize);
+    add_dataset1D(index, "copy", copy.data(), copy.size(), compression, chunksize);
+    
+}
 };

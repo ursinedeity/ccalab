@@ -8,7 +8,7 @@ SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -Wall -O3 -std=c++0x
-LIB := -lpthread
+LIB := -lpthread -lhdf5 -lhdf5_cpp
 INC := -I include
 
 $(STATIC): $(OBJECTS)

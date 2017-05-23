@@ -1,0 +1,168 @@
+
+#include "h5file.hpp"
+
+/**
+ * Add attribute to and H5 H5Location overload string version
+ * 
+ * Input Arguments:
+ *   H5::H5Location & loc         - Target to add attribute, can be group or file
+ *   const std::string & name     - Attribute name
+ *   const std::string & attr     - string Attribute
+ * 
+ */
+void add_attribute(H5::H5Location &loc, const std::string &name, const std::string &attr){
+    // Create new dataspace for attribute
+    H5::DataSpace attr_dataspace = H5::DataSpace(H5S_SCALAR);
+    
+    // Create new string datatype for attribute
+    H5::StrType strdatatype(H5::PredType::C_S1, H5T_VARIABLE);
+    
+    // Create attribute and write to it
+    H5::Attribute att_in = loc.createAttribute(name, strdatatype, attr_dataspace);
+    att_in.write(strdatatype, attr);
+    
+}
+
+
+
+/**
+ * Add attribute to and H5 H5Location overloaded int verion
+ * 
+ * Input Arguments:
+ *   H5::H5Location & loc         - Target to add attribute, can be group or file
+ *   const std::string & name     - Attribute name
+ *   int & attr                   - int Attribute
+ * 
+ */
+void add_attribute(H5::H5Location &loc, const std::string &name, int *attr){
+    // Create new dataspace for attribute
+    H5::DataSpace attr_dataspace = H5::DataSpace(H5S_SCALAR);
+    
+    // Create attribute and write to it
+    H5::Attribute att_in = loc.createAttribute(name, H5::PredType::NATIVE_INT, attr_dataspace);
+    att_in.write(H5::PredType::NATIVE_INT, attr);
+    
+}
+
+
+
+/**
+ * Add 1D-dataset to H5::Group overloaded int verion
+ * 
+ * Input Arguments:
+ *   H5::Group & loc              - Target to add dataset, can be group or file
+ *   const std::string & name     - dataset name
+ *   int *data                    - int array pointer
+ *   unsigned int length          - array length
+ *   unsigned int compression     - compression level, default 6
+ *   unsigned int chunksize       - chunk size, default 100000
+ * 
+ */
+void add_dataset1D(H5::Group &loc, const std::string &name, int *data, unsigned int length, unsigned int compression, unsigned int chunksize){
+    hsize_t dims[1] = {length};
+    if (chunksize > length)
+        chunksize = length;
+    hsize_t cdims[1] = {chunksize};
+    // create new dspace
+    H5::DataSpace dataspace(1, dims);
+    
+    // create dataset creation prop list
+    H5::DSetCreatPropList ds_creatplist;
+    ds_creatplist.setChunk( 1, cdims );
+    // then modify it for compression
+    ds_creatplist.setDeflate( compression );
+    
+    
+    //Create the dataset.
+    H5::DataSet dataset = loc.createDataSet(name, H5::PredType::NATIVE_INT, dataspace, ds_creatplist);
+    dataset.write(data, H5::PredType::NATIVE_INT);
+}
+
+
+
+
+/**
+ * Add 1D-dataset to H5::Group overloaded unsigned int verion
+ * 
+ * Input Arguments:
+ *   unsigned int *data                    - int array pointer
+ * 
+ */
+void add_dataset1D(H5::Group &loc, const std::string &name, unsigned int *data, unsigned int length, unsigned int compression, unsigned int chunksize){
+    hsize_t dims[1] = {length};
+    if (chunksize > length)
+        chunksize = length;
+    hsize_t cdims[1] = {chunksize};
+    // create new dspace
+    H5::DataSpace dataspace(1, dims);
+    
+    // create dataset creation prop list
+    H5::DSetCreatPropList ds_creatplist;
+    ds_creatplist.setChunk( 1, cdims );
+    // then modify it for compression
+    ds_creatplist.setDeflate( compression );
+    
+    
+    //Create the dataset.
+    H5::DataSet dataset = loc.createDataSet(name, H5::PredType::NATIVE_UINT, dataspace, ds_creatplist);
+    dataset.write(data, H5::PredType::NATIVE_UINT);
+}
+
+
+
+/**
+ * Add 1D-dataset to H5::Group overloaded float verion
+ * 
+ * Input Arguments:
+ *   float *data                    - float array pointer
+ * 
+ */
+void add_dataset1D(H5::Group &loc, const std::string &name, float *data, unsigned int length, unsigned int compression, unsigned int chunksize){
+    hsize_t dims[1] = {length};
+    if (chunksize > length)
+        chunksize = length;
+    hsize_t cdims[1] = {chunksize};
+    // create new dspace
+    H5::DataSpace dataspace(1, dims);
+    
+    // create dataset creation prop list
+    H5::DSetCreatPropList ds_creatplist;
+    ds_creatplist.setChunk( 1, cdims );
+    // then modify it for compression
+    ds_creatplist.setDeflate( compression );
+    
+    
+    //Create the dataset.
+    H5::DataSet dataset = loc.createDataSet(name, H5::PredType::NATIVE_FLOAT, dataspace, ds_creatplist);
+    dataset.write(data, H5::PredType::NATIVE_FLOAT);
+}
+
+
+
+
+/**
+ * Add 1D-dataset to H5::Group overloaded string verion
+ * 
+ * Input Arguments:
+ *   std::string *data                 - string array pointer
+ * 
+ */
+void add_dataset1D(H5::Group &loc, const std::string &name, std::string *data, unsigned int length, unsigned int compression, unsigned int chunksize){
+    hsize_t dims[1] = {length};
+    if (chunksize > length)
+        chunksize = length;
+    hsize_t cdims[1] = {chunksize};
+    // create new dspace
+    H5::DataSpace dataspace(1, dims);
+    
+    // create dataset creation prop list
+    H5::DSetCreatPropList ds_creatplist;
+    ds_creatplist.setChunk( 1, cdims );
+    // then modify it for compression
+    ds_creatplist.setDeflate( compression );
+    
+    H5::StrType strdatatype(H5::PredType::C_S1, H5T_VARIABLE);
+    //Create the dataset.
+    H5::DataSet dataset = loc.createDataSet(name, strdatatype, dataspace, ds_creatplist);
+    dataset.write(data, strdatatype);
+}
