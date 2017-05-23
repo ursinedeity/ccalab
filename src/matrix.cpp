@@ -24,14 +24,14 @@ namespace alab{
  *   Complexity: Linear.  Specifically O(nnz(A) + size)
  */
 void Matrix::LoadCoo(const unsigned int *Ai, const unsigned int *Aj, const float *Ax, unsigned int size, unsigned int nnz){
-    indptr = new unsigned int [size+1];
-    indices = new unsigned int [nnz];
-    data = new float [nnz];
+    indptr.resize(size+1);
+    indices.resize(nnz);
+    data.resize(nnz);
     
     this->size = size;
     this->nnz = nnz;
     
-    std::fill(indptr, indptr + size, 0);
+    std::fill(indptr.begin(), indptr.end(), 0);
     
     for (unsigned int i = 0; i < nnz; ++i)
         indptr[Ai[i]]++;
@@ -79,7 +79,7 @@ void Matrix::LoadCoo(const unsigned int *Ai, const unsigned int *Aj, const float
  * 
  */
 void Matrix::PopDiagonal(){
-    diagonal = new float [size];
+    diagonal.resize(size);
     
     for(unsigned int i = 0; i < size; i++){
         const unsigned int row_start = indptr[i];
@@ -130,7 +130,8 @@ void Matrix::EliminateZeros(){
     }
     
     this->nnz = new_nnz;
-
+    indices.resize(new_nnz);
+    data.resize(new_nnz);
 }
 
 
@@ -216,10 +217,10 @@ void Matrix::SortIndices(){
 void Matrix::save(H5::H5File &loc, unsigned int compression, unsigned int chunksize){
     H5::Group matrix(loc.createGroup("matrix"));
     
-    add_dataset1D(matrix, "data", data, nnz, compression, chunksize);
-    add_dataset1D(matrix, "indices", indices, nnz, compression, chunksize);
-    add_dataset1D(matrix, "indptr", indptr, size+1, compression, chunksize);
-    add_dataset1D(matrix, "diagonal", diagonal, size, compression, chunksize);
+    add_dataset1D(matrix, "data", data.data(), nnz, compression, chunksize);
+    add_dataset1D(matrix, "indices", indices.data(), nnz, compression, chunksize);
+    add_dataset1D(matrix, "indptr", indptr.data(), size+1, compression, chunksize);
+    add_dataset1D(matrix, "diagonal", diagonal.data(), size, compression, chunksize);
     
 }
 

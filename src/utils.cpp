@@ -150,7 +150,7 @@ Index Genome::BinInfo(unsigned int resolution){
 void Genome::save(H5::H5File &loc, unsigned int compression, unsigned int chunksize){
     H5::Group genome(loc.createGroup("genome"));
     
-    add_dataset1D(genome, "assembly", &assembly, 1);
+    add_scalar(genome, "assembly", assembly);
     add_dataset1D(genome, "chroms", chroms.data(), chroms.size(), compression, chunksize);
     add_dataset1D(genome, "origins", origins.data(), origins.size(), compression, chunksize);
     add_dataset1D(genome, "lengths", lengths.data(), lengths.size(), compression, chunksize);

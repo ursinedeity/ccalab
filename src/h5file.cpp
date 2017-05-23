@@ -31,16 +31,16 @@ void add_attribute(H5::H5Location &loc, const std::string &name, const std::stri
  * Input Arguments:
  *   H5::H5Location & loc         - Target to add attribute, can be group or file
  *   const std::string & name     - Attribute name
- *   int & attr                   - int Attribute
+ *   int attr                   - int Attribute
  * 
  */
-void add_attribute(H5::H5Location &loc, const std::string &name, int *attr){
+void add_attribute(H5::H5Location &loc, const std::string &name, int attr){
     // Create new dataspace for attribute
     H5::DataSpace attr_dataspace = H5::DataSpace(H5S_SCALAR);
     
     // Create attribute and write to it
     H5::Attribute att_in = loc.createAttribute(name, H5::PredType::NATIVE_INT, attr_dataspace);
-    att_in.write(H5::PredType::NATIVE_INT, attr);
+    att_in.write(H5::PredType::NATIVE_INT, &attr);
     
 }
 
@@ -165,4 +165,64 @@ void add_dataset1D(H5::Group &loc, const std::string &name, std::string *data, u
     //Create the dataset.
     H5::DataSet dataset = loc.createDataSet(name, strdatatype, dataspace, ds_creatplist);
     dataset.write(data, strdatatype);
+}
+
+
+
+/**
+ * Add scalar-dataset to H5::Group
+ * 
+ * Input Arguments:
+ *   H5::Group & loc              - Target to add dataset, can be group or file
+ *   const std::string & name     - dataset name
+ *   int data                     - int data
+ * 
+ */
+void add_scalar(H5::Group &loc, const std::string &name, int data){
+    // Create new dataspace
+    H5::DataSpace scalar_dataspace = H5::DataSpace(H5S_SCALAR);
+    
+    // Create dataset and write to it
+    H5::DataSet scalar_in = loc.createDataSet(name, H5::PredType::NATIVE_INT, scalar_dataspace);
+    scalar_in.write(&data, H5::PredType::NATIVE_INT);
+}
+
+
+
+/**
+ * Add scalar-dataset to H5::Group overloed float version
+ * 
+ * Input Arguments:
+ *   float data                   - float data
+ * 
+ */
+void add_scalar(H5::Group &loc, const std::string &name, float data){
+    // Create new dataspace
+    H5::DataSpace scalar_dataspace = H5::DataSpace(H5S_SCALAR);
+    
+    // Create dataset and write to it
+    H5::DataSet scalar_in = loc.createDataSet(name, H5::PredType::NATIVE_FLOAT, scalar_dataspace);
+    scalar_in.write(&data, H5::PredType::NATIVE_FLOAT);
+}
+
+
+
+
+/**
+ * Add scalar-dataset to H5::Group overloed string version
+ * 
+ * Input Arguments:
+ *   std::string data                   - string data
+ * 
+ */
+void add_scalar(H5::Group &loc, const std::string &name, const std::string &data){
+    // Create new dataspace
+    H5::DataSpace scalar_dataspace = H5::DataSpace(H5S_SCALAR);
+    
+    // Create new string datatype
+    H5::StrType strdatatype(H5::PredType::C_S1, H5T_VARIABLE);
+    
+    // Create dataset and write to it
+    H5::DataSet scalar_in = loc.createDataSet(name, strdatatype, scalar_dataspace);
+    scalar_in.write(data, strdatatype);
 }

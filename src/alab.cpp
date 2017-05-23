@@ -26,15 +26,15 @@ void ContactMatrix::save(const std::string &filename, unsigned int compression, 
     int nbin = index.size;
     
     add_attribute(h5f,"version", VERSION);
-    add_attribute(h5f,"resolution", &resolution);
-    add_attribute(h5f,"nbin", &nbin);
-    std::cout << 'a' << std::endl;
+    add_attribute(h5f,"resolution", resolution);
+    add_attribute(h5f,"nbin", nbin);
+    //std::cout << 'a' << std::endl;
     genome.save(h5f, compression, chunksize);
-    std::cout << 'g'<< std::endl;
+    //std::cout << 'g'<< std::endl;
     index. save(h5f, compression, chunksize);
-    std::cout << 'i'<< std::endl;
+    //std::cout << 'i'<< std::endl;
     matrix.save(h5f, compression, chunksize);
-    std::cout << 'm'<< std::endl;
+    //std::cout << 'm'<< std::endl;
 }
 
 };
