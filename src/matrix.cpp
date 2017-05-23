@@ -1,5 +1,24 @@
+// Copyright (C) 2017 University of Southern California and
+//                          Nan Hua
+// 
+// Authors: Nan Hua
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//  
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "matrix.hpp"
 #include <algorithm>
+#include <utility>
 
 namespace alab{
     
@@ -7,9 +26,9 @@ namespace alab{
  * Build Matrix by talking an i,j,v list
  * 
  * Input Arguments:
- *   const unsigned int *Ai           - i
- *   const unsigned int *Aj           - j
- *   const float *Ax                  - value
+ *   const int *Ai           - i
+ *   const int *Aj           - j
+ *   const DATATYPE *Ax               - value
  *   unsigned int size                - matrix size
  *   unsigned int nnz                 - number of non zeros nnz(A)
  * 
@@ -23,7 +42,7 @@ namespace alab{
  *
  *   Complexity: Linear.  Specifically O(nnz(A) + size)
  */
-void Matrix::LoadCoo(const unsigned int *Ai, const unsigned int *Aj, const float *Ax, unsigned int size, unsigned int nnz){
+void Matrix::LoadCoo(const int *Ai, const int *Aj, const DATATYPE *Ax, unsigned int size, unsigned int nnz){
     indptr.resize(size+1);
     indices.resize(nnz);
     data.resize(nnz);
@@ -37,15 +56,15 @@ void Matrix::LoadCoo(const unsigned int *Ai, const unsigned int *Aj, const float
         indptr[Ai[i]]++;
     
     for (unsigned int i = 0, cumsum = 0; i < size; ++i){
-        unsigned int tmp = indptr[i];
+        int tmp = indptr[i];
         indptr[i] = cumsum;
         cumsum += tmp;
     }
     indptr[size] = nnz;
     
     for (unsigned int i = 0; i < nnz; ++i){
-        unsigned int row = Ai[i];
-        unsigned int dest = indptr[row];
+        int row = Ai[i];
+        int dest = indptr[row];
         
         indices[dest] = Aj[i];
         data[dest] = Ax[i];
@@ -54,7 +73,7 @@ void Matrix::LoadCoo(const unsigned int *Ai, const unsigned int *Aj, const float
     }
     
     for (unsigned int i = 0, last = 0; i <= size; ++i){
-        unsigned int tmp = indptr[i];
+        int tmp = indptr[i];
         indptr[i] = last;
         last = tmp;
     }
@@ -82,11 +101,11 @@ void Matrix::PopDiagonal(){
     diagonal.resize(size);
     
     for(unsigned int i = 0; i < size; i++){
-        const unsigned int row_start = indptr[i];
-        const unsigned int row_end   = indptr[i+1];
+        const int row_start = indptr[i];
+        const int row_end   = indptr[i+1];
 
-        float diag = 0;
-        for(unsigned int jj = row_start; jj < row_end; jj++){
+        DATATYPE diag = 0;
+        for(int jj = row_start; jj < row_end; jj++){
             if (indices[jj] == i){
                 diag += data[jj];
                 data[jj] = 0;
@@ -111,14 +130,14 @@ void Matrix::PopDiagonal(){
  *
  */
 void Matrix::EliminateZeros(){
-    unsigned int new_nnz = 0;
-    unsigned int row_end = 0;
+    int new_nnz = 0;
+    int row_end = 0;
     for(unsigned int i = 0; i < size; i++){
-        unsigned int jj = row_end;
+        int jj = row_end;
         row_end = indptr[i+1];
         while( jj < row_end ){
-            unsigned int j = indices[jj];
-            float x = data[jj];
+            int j = indices[jj];
+            DATATYPE x = data[jj];
             if(x != 0){
                 indices[new_nnz] = j;
                 data[new_nnz] = x;
@@ -145,7 +164,7 @@ void Matrix::EliminateZeros(){
  */
 bool Matrix::HasSortedIndices(){
   for(unsigned int i = 0; i < size; i++){
-      for(unsigned int jj = indptr[i]; jj < indptr[i+1] - 1; jj++){
+      for(int jj = indptr[i]; jj < indptr[i+1] - 1; jj++){
           if(indices[jj] > indices[jj+1]){
               return false;
           }
@@ -172,21 +191,21 @@ bool kv_pair_less(const std::pair<T1,T2>& x, const std::pair<T1,T2>& y){
  *
  */
 void Matrix::SortIndices(){
-    std::vector< std::pair<unsigned int, float> > temp;
+    std::vector< std::pair<int, DATATYPE> > temp;
 
     for(unsigned int i = 0; i < size; i++){
-        unsigned int row_start = indptr[i];
-        unsigned int row_end   = indptr[i+1];
+        int row_start = indptr[i];
+        int row_end   = indptr[i+1];
 
         temp.resize(row_end - row_start);
-        for (unsigned int jj = row_start, n = 0; jj < row_end; jj++, n++){
+        for (int jj = row_start, n = 0; jj < row_end; jj++, n++){
             temp[n].first  = indices[jj];
             temp[n].second = data[jj];
         }
 
-        std::sort(temp.begin(),temp.end(),kv_pair_less<unsigned int, float>);
+        std::sort(temp.begin(),temp.end(),kv_pair_less<int, DATATYPE>);
 
-        for(unsigned int jj = row_start, n = 0; jj < row_end; jj++, n++){
+        for(int jj = row_start, n = 0; jj < row_end; jj++, n++){
             indices[jj] = temp[n].first;
             data[jj] = temp[n].second;
         }

@@ -1,3 +1,21 @@
+// Copyright (C) 2017 University of Southern California and
+//                          Nan Hua
+// 
+// Authors: Nan Hua
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//  
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef __ALAB_UTILS
 #define __ALAB_UTILS
 #include <vector>
@@ -25,21 +43,21 @@ struct IndexItem{
 class Index{
 public:
     Index(){}
-    Index(const std::vector<unsigned int> &chromList, 
-          const std::vector<unsigned int> &startList, 
-          const std::vector<unsigned int> &endList,
-          const std::vector<unsigned int> &chrom_sizes
+    Index(const std::vector<int> &chromList, 
+          const std::vector<int> &startList, 
+          const std::vector<int> &endList,
+          const std::vector<int> &chrom_sizes
          );
 
-    std::vector<unsigned int> chrom;  // chromosome ids
-    std::vector<unsigned int> copy;   // chromosome copies
-    std::vector<unsigned int> start;  // starting basepairs
-    std::vector<unsigned int> end;    // ending basepairs
+    std::vector<int> chrom;  // chromosome ids
+    std::vector<int> copy;   // chromosome copies
+    std::vector<int> start;  // starting basepairs
+    std::vector<int> end;    // ending basepairs
     std::vector<std::string> label; // labels
 
     unsigned int num_chrom,size;  // number of chromosomes
-    std::vector<unsigned int> chrom_sizes;  // sizes of chromosomes
-    std::vector<unsigned int> offset;  // start position for each chromosome
+    std::vector<int> chrom_sizes;  // sizes of chromosomes
+    std::vector<int> offset;  // start position for each chromosome
     
     // returns an IndexItem, a container of references
     // to the values. Keep in mind this could break
@@ -48,7 +66,7 @@ public:
     //IndexItem operator[](int i);
     
     // pushes back a record
-    void push_back(unsigned int chrom, unsigned int copy, unsigned int start, unsigned int end, 
+    void push_back(int chrom, int copy, int start, int end, 
                    const std::string& label = "");
 
     // update num_chrom and the chrom_* vectors. Call if the data
@@ -65,15 +83,15 @@ public:
     Genome(){}
     std::string assembly;
     std::vector<std::string> chroms;
-    std::vector<unsigned int> origins;
-    std::vector<unsigned int> lengths; 
+    std::vector<int> origins;
+    std::vector<int> lengths; 
     Genome(const std::string &assembly, 
            const std::vector<std::string> &chroms, 
-           const std::vector<unsigned int> &origins, 
-           const std::vector<unsigned int> &lengths);
+           const std::vector<int> &origins, 
+           const std::vector<int> &lengths);
     Genome(const std::string &assembly, 
            const std::vector<std::string> &chroms, 
-           const std::vector<unsigned int> &lengths);
+           const std::vector<int> &lengths);
     std::string get_chrom(unsigned int c);
     int get_chromnum(const std::string & chrom);
     Index BinInfo(unsigned int resolution);

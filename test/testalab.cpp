@@ -2,14 +2,14 @@
 #include <iostream>
 #include <vector>
 int main(){
-    unsigned int Ai [] = {0,0,0,0,1,1,2,3};
-    unsigned int Aj [] = {0,1,2,3,2,3,3,3};
+    int Ai [] = {0,0,0,0,1,1,2,3};
+    int Aj [] = {0,1,2,3,2,3,3,3};
     float Ax []={1,3,4,5,3,3,3,1};
     
     std::string assembly("mm10");
     std::vector<std::string> chroms= {"chr1","chr2","chr3"};
-    std::vector<unsigned int> origins = {0,0,0};
-    std::vector<unsigned int> lengths = {10000,20000,30000};
+    std::vector<int> origins = {0,0,0};
+    std::vector<int> lengths = {10000,20000,30000};
 
     alab::ContactMatrix cm;
     

@@ -1,3 +1,21 @@
+// Copyright (C) 2017 University of Southern California and
+//                          Nan Hua
+// 
+// Authors: Nan Hua
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//  
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "utils.hpp"
 
 #include <cmath>
@@ -12,11 +30,11 @@ namespace alab{
  * Input Arguments:
  *   const std::string & assembly               - assembly name
  *   const std::vector<std::string> & chroms    - list of chroms in the genome
- *   const std::vector<unsigned int> & origins  - list of chromosome origin in the genome
- *   const std::vector<unsigned int> & lengths  - list of chromosome length
+ *   const std::vector<int> & origins           - list of chromosome origin in the genome
+ *   const std::vector<int> & lengths           - list of chromosome length
  * 
  */
-Genome::Genome(const std::string &assembly, const std::vector<std::string> &chroms, const std::vector<unsigned int> &origins, const std::vector<unsigned int> &lengths){
+Genome::Genome(const std::string &assembly, const std::vector<std::string> &chroms, const std::vector<int> &origins, const std::vector<int> &lengths){
     if (chroms.size() != lengths.size()){
         std::cerr << "Chroms and lengths sizes don't match!\n";
         exit(1);        
@@ -41,10 +59,10 @@ Genome::Genome(const std::string &assembly, const std::vector<std::string> &chro
  * Input Arguments:
  *   const std::string & assembly               - assembly name
  *   const std::vector<std::string> & chroms    - list of chroms in the genome
- *   const std::vector<unsigned int> & lengths  - list of chromosome length
+ *   const std::vector<int> & lengths  - list of chromosome length
  * 
  */
-Genome::Genome(const std::string &assembly, const std::vector<std::string> &chroms, const std::vector<unsigned int> &lengths){
+Genome::Genome(const std::string &assembly, const std::vector<std::string> &chroms, const std::vector<int> &lengths){
     this->assembly = assembly;
     this->chroms = chroms;
     this->lengths = lengths;
@@ -107,20 +125,20 @@ int Genome::get_chromnum(const std::string & chrom){
  * 
  */
 Index Genome::BinInfo(unsigned int resolution){
-    std::vector<unsigned int> binSize, chromList, binLabel, startList, endList;
+    std::vector<int> binSize, chromList, binLabel, startList, endList;
     
     for (auto &l : lengths)
         binSize.push_back( l/resolution + ( l%resolution != 0) );
     
     for (unsigned int i = 0; i < chroms.size(); ++i){
-        for (unsigned int j = 0; j < binSize[i]; ++j){
+        for (int j = 0; j < binSize[i]; ++j){
             chromList.push_back(i);
             binLabel.push_back(j + origins[i]/resolution);
         }
     }
     
     
-    for (unsigned int &label : binLabel){
+    for (int &label : binLabel){
         startList.push_back (label*resolution );
         endList.push_back( (label+1)*resolution );
     }
@@ -165,16 +183,16 @@ void Genome::save(H5::H5File &loc, unsigned int compression, unsigned int chunks
  * Index instance constructor
  * 
  * Input Arguments:
- *   const std::vector<unsigned int> &chromList
- *   const std::vector<unsigned int> &startList
- *   const std::vector<unsigned int> &endList
- *   const std::vector<unsigned int> &chrom_sizes
+ *   const std::vector<int> &chromList
+ *   const std::vector<int> &startList
+ *   const std::vector<int> &endList
+ *   const std::vector<int> &chrom_sizes
  * 
  */
-Index::Index(const std::vector<unsigned int> &chromList, 
-             const std::vector<unsigned int> &startList, 
-             const std::vector<unsigned int> &endList, 
-             const std::vector<unsigned int> &chrom_sizes){
+Index::Index(const std::vector<int> &chromList, 
+             const std::vector<int> &startList, 
+             const std::vector<int> &endList, 
+             const std::vector<int> &chrom_sizes){
     this->chrom = chromList;
     this->start = startList;
     this->end = endList;
