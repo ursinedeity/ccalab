@@ -10,7 +10,7 @@
 
 int main(int argc, char * argv[]){
     int optc;
-    unsigned int resolution = 100000;
+    int resolution = 100000;
     std::string outfile("output.hcs");
     std::string corder,genome_assembly;
     std::vector<std::string> chromOrder;
@@ -45,7 +45,7 @@ int main(int argc, char * argv[]){
     }
     
     std::shared_ptr<std::istream> input = GetInput(inputFile);
-    
+    std::cerr << resolution << std::endl;
     PairsFileHeader header;
     
     //using arguments to get chromosome order e.g. -c chr1-chr2-chr3-chr4-...
@@ -64,7 +64,7 @@ int main(int argc, char * argv[]){
     
 //     for (auto &c : genome.chroms)
 //         std::cout << c << ' ';
-    
+    m.resolution = resolution;
     m.index = m.genome.BinInfo(resolution);
     
 //     for (auto &b : index.offset)
