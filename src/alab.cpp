@@ -35,7 +35,7 @@ namespace alab{
 void ContactMatrix::save(const std::string &filename, unsigned int compression, unsigned int chunksize){
     
     std::string name(filename);
-    if ((name.length() < 4) || (name.substr(name.length() - 5, 4) != ".hcs"))
+    if ((name.substr(name.length() - 4, 4) != ".hcs") || (name.length() <= 4))
         name += ".hcs";
     
     H5::H5File h5f(name, H5F_ACC_TRUNC);

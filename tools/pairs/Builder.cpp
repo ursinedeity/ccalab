@@ -27,13 +27,13 @@ bool CooBuilder::AddPairsLine(const std::string &line){
     if ((bin[0] == ci) && (bin[1] == cj))
         cv += 1;
     else{
-        if (cv > 0){
-            Ai.push_back(ci);
-            Aj.push_back(cj);
-            Ax.push_back(cv);
-        }
+        
+        Ai.push_back(ci);
+        Aj.push_back(cj);
+        Ax.push_back(cv);
+        
         ci = bin[0]; cj = bin[1];
-        cv = 0;
+        cv = 1;
     }
     
     return true;
