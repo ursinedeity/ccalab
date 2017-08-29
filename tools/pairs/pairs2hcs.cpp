@@ -81,6 +81,8 @@ int main(int argc, char * argv[]){
     
     //builder.PrintCoo();
     m.matrix.LoadCoo(builder.Ai.data(), builder.Aj.data(), builder.Ax.data(), m.index.size, builder.Ax.size());
+    m.matrix.SortIndices();
+    m.matrix.SumDuplicates();
     m.matrix.PopDiagonal();
     m.matrix.EliminateZeros();
     m.save(outfile);

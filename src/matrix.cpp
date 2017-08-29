@@ -118,6 +118,44 @@ void Matrix::PopDiagonal(){
 
 
 
+/**
+ * Sum together duplicate column entries in each row
+ *   
+ * Note:
+ *   This function is adpoted from scipy sparsetools
+ * 
+ * Note:
+ *   The column indicies within each row must be in sorted order.
+ *   Explicit zeros are retained.
+ *   indptr, indices, and data will be modified *inplace*
+ *
+ */
+void Matrix::SumDuplicates(){
+    int new_nnz = 0;
+    int row_end = 0;
+    for(unsigned int i = 0; i < size; i++){
+        int jj = row_end;
+        row_end = indptr[i+1];
+        while( jj < row_end ){
+            int j = indices[jj];
+            DATATYPE x = data[jj];
+            jj++;
+            while( jj < row_end && indices[jj] == j ){
+                x += data[jj];
+                jj++;
+            }
+            indices[new_nnz] = j;
+            data[new_nnz] = x;
+            new_nnz++;
+        }
+        indptr[i+1] = new_nnz;
+    }
+    
+    prune(new_nnz);
+}
+
+
+
 
 /**
  * Eliminate zero entries from csr matrix 
@@ -148,9 +186,8 @@ void Matrix::EliminateZeros(){
         indptr[i+1] = new_nnz;
     }
     
-    this->nnz = new_nnz;
-    indices.resize(new_nnz);
-    data.resize(new_nnz);
+    prune(new_nnz);
+    
 }
 
 
@@ -210,6 +247,22 @@ void Matrix::SortIndices(){
             data[jj] = temp[n].second;
         }
     }    
+}
+
+
+
+
+/**
+ * Remove space after nnz
+ * 
+ * Input Arguments:
+ *   unsigned int new_nnz          - new nnz 
+ */
+
+void Matrix::prune(unsigned int new_nnz){
+    this->nnz = new_nnz;
+    indices.resize(new_nnz);
+    data.resize(new_nnz);
 }
 
 

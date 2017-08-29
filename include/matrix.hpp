@@ -36,9 +36,12 @@ public:
     
     void LoadCoo(const int *Ai, const int *Aj, const DATATYPE *Ax, unsigned int size, unsigned int nnz);
     void PopDiagonal();
+    void SumDuplicates();
     void EliminateZeros();
     bool HasSortedIndices();
     void SortIndices();
+    
+    void prune(unsigned int new_nnz);
     Matrix(){
         size = 0; nnz = 0;
     }
