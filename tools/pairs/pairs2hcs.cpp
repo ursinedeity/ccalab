@@ -74,16 +74,22 @@ int main(int argc, char * argv[]){
     
     CooBuilder builder(m.genome, m.index, resolution);
     
+    std::cerr << "Building pairs list..." << std::endl;
+    
     builder.AddPairsLine(line);
     for (;std::getline(*input,line);){
         builder.AddPairsLine(line);
     }
     
     //builder.PrintCoo();
+    std::cerr << "Converting to csr matrix..." << std::endl;
     m.matrix.LoadCoo(builder.Ai.data(), builder.Aj.data(), builder.Ax.data(), m.index.size, builder.Ax.size());
+    std::cerr << "Sorting indices..." << std::endl;
     m.matrix.SortIndices();
+    std::cerr << "Summing Duplicates..." << std::endl;
     m.matrix.SumDuplicates();
     m.matrix.PopDiagonal();
+    std::cerr << "Eliminating Zeros..." << std::endl;
     m.matrix.EliminateZeros();
     m.save(outfile);
 }
