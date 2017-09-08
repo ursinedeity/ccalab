@@ -24,6 +24,12 @@ bool CooBuilder::AddPairsLine(const std::string &line){
         bin[i] = pos/resolution + index.offset[chromnum];
     }
     
+    if (bin[0] > bin[1]){
+        unsigned int t = bin[0];
+        bin[0] = bin[1];
+        bin[1] = t;
+    }
+    
     if ((bin[0] == ci) && (bin[1] == cj))
         cv += 1;
     else{
