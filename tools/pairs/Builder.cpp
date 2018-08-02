@@ -48,7 +48,7 @@ bool CooBuilder::AddPairsLine(const std::string &line){
 
 
 void CooBuilder::PrintCoo(){
-    for (int i = 0; i < Ax.size(); ++i){
+    for (unsigned int i = 0; i < Ax.size(); ++i){
         std::cout << Ai[i] << ' ' << Aj[i] << ' ' << Ax[i] << '\n';
     }
 }

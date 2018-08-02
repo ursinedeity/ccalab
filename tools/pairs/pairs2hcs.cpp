@@ -81,6 +81,7 @@ int main(int argc, char * argv[]){
         builder.AddPairsLine(line);
     }
     
+    std::cerr << "matrix nnz = " << builder.Ax.size() << '\n';
     //builder.PrintCoo();
     std::cerr << "Converting to csr matrix..." << std::endl;
     m.matrix.LoadCoo(builder.Ai.data(), builder.Aj.data(), builder.Ax.data(), m.index.size, builder.Ax.size());

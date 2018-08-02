@@ -26,8 +26,8 @@ namespace alab{
  * Build Matrix by talking an i,j,v list
  * 
  * Input Arguments:
- *   const int *Ai           - i
- *   const int *Aj           - j
+ *   const unsigned int *Ai           - i
+ *   const unsigned int *Aj           - j
  *   const DATATYPE *Ax               - value
  *   unsigned int size                - matrix size
  *   unsigned int nnz                 - number of non zeros nnz(A)
@@ -42,7 +42,7 @@ namespace alab{
  *
  *   Complexity: Linear.  Specifically O(nnz(A) + size)
  */
-void Matrix::LoadCoo(const int *Ai, const int *Aj, const DATATYPE *Ax, unsigned int size, unsigned int nnz){
+void Matrix::LoadCoo(const unsigned int *Ai, const unsigned int *Aj, const DATATYPE *Ax, unsigned int size, unsigned int nnz){
     indptr.resize(size+1);
     indices.resize(nnz);
     data.resize(nnz);
@@ -56,15 +56,15 @@ void Matrix::LoadCoo(const int *Ai, const int *Aj, const DATATYPE *Ax, unsigned 
         indptr[Ai[i]]++;
     
     for (unsigned int i = 0, cumsum = 0; i < size; ++i){
-        int tmp = indptr[i];
+        unsigned int tmp = indptr[i];
         indptr[i] = cumsum;
         cumsum += tmp;
     }
     indptr[size] = nnz;
     
     for (unsigned int i = 0; i < nnz; ++i){
-        int row = Ai[i];
-        int dest = indptr[row];
+        unsigned int row = Ai[i];
+        unsigned int dest = indptr[row];
         
         indices[dest] = Aj[i];
         data[dest] = Ax[i];
@@ -73,7 +73,7 @@ void Matrix::LoadCoo(const int *Ai, const int *Aj, const DATATYPE *Ax, unsigned 
     }
     
     for (unsigned int i = 0, last = 0; i <= size; ++i){
-        int tmp = indptr[i];
+        unsigned int tmp = indptr[i];
         indptr[i] = last;
         last = tmp;
     }
@@ -101,11 +101,11 @@ void Matrix::PopDiagonal(){
     diagonal.resize(size);
     
     for(unsigned int i = 0; i < size; i++){
-        const int row_start = indptr[i];
-        const int row_end   = indptr[i+1];
+        const unsigned int row_start = indptr[i];
+        const unsigned int row_end   = indptr[i+1];
 
         DATATYPE diag = 0;
-        for(int jj = row_start; jj < row_end; jj++){
+        for(unsigned int jj = row_start; jj < row_end; jj++){
             if (indices[jj] == i){
                 diag += data[jj];
                 data[jj] = 0;
@@ -131,13 +131,13 @@ void Matrix::PopDiagonal(){
  *
  */
 void Matrix::SumDuplicates(){
-    int new_nnz = 0;
-    int row_end = 0;
+    unsigned int new_nnz = 0;
+    unsigned int row_end = 0;
     for(unsigned int i = 0; i < size; i++){
-        int jj = row_end;
+        unsigned int jj = row_end;
         row_end = indptr[i+1];
         while( jj < row_end ){
-            int j = indices[jj];
+            unsigned int j = indices[jj];
             DATATYPE x = data[jj];
             jj++;
             while( jj < row_end && indices[jj] == j ){
@@ -168,13 +168,13 @@ void Matrix::SumDuplicates(){
  *
  */
 void Matrix::EliminateZeros(){
-    int new_nnz = 0;
-    int row_end = 0;
+    unsigned int new_nnz = 0;
+    unsigned int row_end = 0;
     for(unsigned int i = 0; i < size; i++){
-        int jj = row_end;
+        unsigned int jj = row_end;
         row_end = indptr[i+1];
         while( jj < row_end ){
-            int j = indices[jj];
+            unsigned int j = indices[jj];
             DATATYPE x = data[jj];
             if(x != 0){
                 indices[new_nnz] = j;
@@ -201,7 +201,7 @@ void Matrix::EliminateZeros(){
  */
 bool Matrix::HasSortedIndices(){
   for(unsigned int i = 0; i < size; i++){
-      for(int jj = indptr[i]; jj < indptr[i+1] - 1; jj++){
+      for(unsigned int jj = indptr[i]; jj < indptr[i+1] - 1; jj++){
           if(indices[jj] > indices[jj+1]){
               return false;
           }
@@ -231,18 +231,18 @@ void Matrix::SortIndices(){
     std::vector< std::pair<int, DATATYPE> > temp;
 
     for(unsigned int i = 0; i < size; i++){
-        int row_start = indptr[i];
-        int row_end   = indptr[i+1];
+        unsigned int row_start = indptr[i];
+        unsigned int row_end   = indptr[i+1];
 
         temp.resize(row_end - row_start);
-        for (int jj = row_start, n = 0; jj < row_end; jj++, n++){
+        for (unsigned int jj = row_start, n = 0; jj < row_end; jj++, n++){
             temp[n].first  = indices[jj];
             temp[n].second = data[jj];
         }
 
-        std::sort(temp.begin(),temp.end(),kv_pair_less<int, DATATYPE>);
+        std::sort(temp.begin(),temp.end(),kv_pair_less<unsigned int, DATATYPE>);
 
-        for(int jj = row_start, n = 0; jj < row_end; jj++, n++){
+        for(unsigned int jj = row_start, n = 0; jj < row_end; jj++, n++){
             indices[jj] = temp[n].first;
             data[jj] = temp[n].second;
         }

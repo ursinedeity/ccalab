@@ -17,11 +17,11 @@ public:
         ci = 0; cj = 0; cv = 0;
     }
     
-    std::vector<int> Ai,Aj;
+    std::vector<unsigned int> Ai,Aj;
     std::vector<float> Ax;
     alab::Genome genome;
     alab::Index index;
-    int resolution, ci, cj;
+    unsigned int resolution, ci, cj;
     float cv;
     bool AddPairsLine(const std::string &line);
     void PrintCoo();

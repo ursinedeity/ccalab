@@ -28,13 +28,13 @@ namespace alab{
 
 class Matrix{
 public:
-    std::vector<int> indptr;
-    std::vector<int> indices;
+    std::vector<unsigned int> indptr;
+    std::vector<unsigned int> indices;
     std::vector<DATATYPE> data;
     std::vector<DATATYPE> diagonal;
     unsigned int size, nnz;
     
-    void LoadCoo(const int *Ai, const int *Aj, const DATATYPE *Ax, unsigned int size, unsigned int nnz);
+    void LoadCoo(const unsigned int *Ai, const unsigned int *Aj, const DATATYPE *Ax, unsigned int size, unsigned int nnz);
     void PopDiagonal();
     void SumDuplicates();
     void EliminateZeros();
